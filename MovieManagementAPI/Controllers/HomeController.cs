@@ -18,13 +18,13 @@ namespace MovieManagementAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult getList()
+        public IActionResult GetList()
         {
             return Ok(_movieDataContext.Movies);
         }
 
         [HttpGet("{id}")]
-        public IActionResult getSingle(int id)
+        public IActionResult GetSingle(int id)
         {
             try
             {
