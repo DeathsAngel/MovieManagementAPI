@@ -34,15 +34,11 @@ namespace MovieManagementAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                    .WithOrigins(
-                        //Configuration["AllowedOrigins:site"]
-                        "http://localhost:8080"
-                    )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .Build()
+                            .WithOrigins(Configuration["AllowedOrigins:Site"])
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .Build()
                 );
-
 
             });
         }
@@ -58,6 +54,8 @@ namespace MovieManagementAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
