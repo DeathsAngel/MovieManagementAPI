@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MovieManagementAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace MovieManagementAPI
 {
@@ -46,6 +47,8 @@ namespace MovieManagementAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //LogApiRequests(app);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,6 +65,31 @@ namespace MovieManagementAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+        }
+
+        //For some debugging so I can see objects passed in.
+        private void LogApiRequests(IApplicationBuilder app)
+        {
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    var requestBody = context.Request.Body;
+                    var requestMethod = context.Request.Method;
+                    if (requestMethod == "POST")
+                    {
+                        var reader = new StreamReader(requestBody);
+                        var body = await reader.ReadToEndAsync();
+                        await File.WriteAllTextAsync(@"C:\Users\Lee\Documents\MovieProj\logs\" + requestMethod + DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second + ".txt", body);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    File.AppendAllText(@"C:\Users\Lee\Documents\MovieProj\errors\error.txt", ex.ToString());
+                }
+
+                await next();
             });
         }
     }
